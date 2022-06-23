@@ -10,9 +10,15 @@
     (bloque E bloquesencima))
 
 
-(defrule desapilar_cajas
+(defrule desapilar_bloque
     ?f1 <- (robot movimientos ?m brazo $?llevabloque)
-    ?f1 <- (bloque ?letra bloquesencima $?bloquesencima)
+    ?f2 <- (bloque ?letra bloquesencima $?bloquesencima bloque ?letrabloquetop $?bloquesencimadelbloque)
+    (test (= (length $?llevabloque) 0))
+    (test (= (length $?bloquesencimadelbloque) 0))
     =>
-    ( printout t"paquetes recogidos" crlf)
+    (retract ?f1)
+    (retract ?f2)
+    (assert (robot movimientos ?m brazo bloque ?letrabloquetop))
+    (assert (bloque ?letra bloquesencima $?bloquesencima bloque ?letrabloquetop $?bloquesencimadelbloque))
+    ( printout t"bloque desapilado" crlf)
 )
