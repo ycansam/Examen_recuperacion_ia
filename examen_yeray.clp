@@ -13,12 +13,45 @@
 (defrule desapilar_bloque
     ?f1 <- (robot movimientos ?m brazo $?llevabloque)
     ?f2 <- (bloque ?letra bloquesencima $?bloquesencima bloque ?letrabloquetop $?bloquesencimadelbloque)
-    (test (= (length $?llevabloque) 0))
-    (test (= (length $?bloquesencimadelbloque) 0))
+    (test (eq $?llevabloque ''))
+    (test (eq $?bloquesencimadelbloque ''))
     =>
     (retract ?f1)
     (retract ?f2)
-    (assert (robot movimientos ?m brazo bloque ?letrabloquetop))
-    (assert (bloque ?letra bloquesencima $?bloquesencima bloque ?letrabloquetop $?bloquesencimadelbloque))
+    (assert (robot movimientos ?m brazo bloque ?letrabloquetop $?bloquesencimadelbloque))
+    (assert (bloque ?letra bloquesencima $?bloquesencima ))
+    (assert (bloque ?letrabloquetop))
     ( printout t"bloque desapilado" crlf)
 )
+
+
+(defrule coger_bloque
+    ?f1 <- (robot movimientos ?m brazo $?llevabloque)
+    ?f2 <- (bloque ?letra bloquesencima $?bloquesencima)
+    (test (eq $?llevabloque ''))
+    (test (eq $?bloquesencima ''))
+    =>
+    (retract ?f1)
+    (retract ?f2)
+    (assert (robot movimientos ?m brazo bloque ?letra bloquesencima $?bloquesencima))
+    ( printout t"bloque cogido" crlf)
+)
+
+(defrule dejar_bloque
+    ?f1 <- (robot movimientos ?m brazo $?llevabloque)
+    (test (neq $?llevabloque '')) ;; comprueba que lleva el bloque
+    =>
+    ( printout t"bloque cogido" crlf)
+
+)
+
+
+;; (defrule dejar_bloque
+;;     ?f1 <- (robot movimientos ?m brazo $?llevabloque)
+;;     (test (neq $?llevabloque '')) ;; comprueba que lleva el bloque
+;;     =>
+;;     (retract ?f1)
+;;     (assert (robot movimientos ?m brazo)) ;; quita el bloque
+;;     (assert ($?llevabloque)) ;; pone el bloque en la mesa
+;;     ( printout t"bloque puesto en la mesa" crlf)
+;; )
